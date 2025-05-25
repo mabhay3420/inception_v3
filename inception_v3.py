@@ -6,27 +6,28 @@
 #     "torchvision",
 # ]
 # ///
-import torch
-import torchvision.transforms.functional as TVF
-from pathlib import Path
-from PIL import Image
-import model_explorer
 from collections import namedtuple
 from functools import partial
+from pathlib import Path
 from typing import Any, Callable, Optional
 
+import model_explorer
+import torch
 import torch.nn.functional as F
-from torch import nn, Tensor
-from torchvision.transforms import ToTensor, Resize, Compose, CenterCrop, Normalize
+from PIL import Image
+from torch import Tensor, nn
 from torchvision.models._api import Weights, WeightsEnum
 from torchvision.models._meta import _IMAGENET_CATEGORIES
+from torchvision.transforms import CenterCrop, Compose, Normalize, Resize, ToTensor
 from torchvision.transforms._presets import ImageClassification
 
 InceptionOutputs = namedtuple("InceptionOutputs", ["logits", "aux_logits"])
 InceptionOutputs.__annotations__ = {"logits": Tensor, "aux_logits": Optional[Tensor]}
 
+
 def separator():
     print("--------------------------")
+
 
 class Inception3(nn.Module):
     def __init__(
@@ -35,7 +36,15 @@ class Inception3(nn.Module):
     ) -> None:
         super().__init__()
         dropout = 0.5
-        inception_blocks = [BasicConv2d, InceptionA, InceptionB, InceptionC, InceptionD, InceptionE, InceptionAux]
+        inception_blocks = [
+            BasicConv2d,
+            InceptionA,
+            InceptionB,
+            InceptionC,
+            InceptionD,
+            InceptionE,
+            InceptionAux,
+        ]
         conv_block = inception_blocks[0]
         inception_a = inception_blocks[1]
         inception_b = inception_blocks[2]
@@ -130,7 +139,10 @@ class Inception3(nn.Module):
 
 class InceptionA(nn.Module):
     def __init__(
-        self, in_channels: int, pool_features: int, conv_block: Optional[Callable[..., nn.Module]] = None
+        self,
+        in_channels: int,
+        pool_features: int,
+        conv_block: Optional[Callable[..., nn.Module]] = None,
     ) -> None:
         super().__init__()
         if conv_block is None:
@@ -168,7 +180,9 @@ class InceptionA(nn.Module):
 
 
 class InceptionB(nn.Module):
-    def __init__(self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None) -> None:
+    def __init__(
+        self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None
+    ) -> None:
         super().__init__()
         if conv_block is None:
             conv_block = BasicConv2d
@@ -197,7 +211,10 @@ class InceptionB(nn.Module):
 
 class InceptionC(nn.Module):
     def __init__(
-        self, in_channels: int, channels_7x7: int, conv_block: Optional[Callable[..., nn.Module]] = None
+        self,
+        in_channels: int,
+        channels_7x7: int,
+        conv_block: Optional[Callable[..., nn.Module]] = None,
     ) -> None:
         super().__init__()
         if conv_block is None:
@@ -242,7 +259,9 @@ class InceptionC(nn.Module):
 
 
 class InceptionD(nn.Module):
-    def __init__(self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None) -> None:
+    def __init__(
+        self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None
+    ) -> None:
         super().__init__()
         if conv_block is None:
             conv_block = BasicConv2d
@@ -273,7 +292,9 @@ class InceptionD(nn.Module):
 
 
 class InceptionE(nn.Module):
-    def __init__(self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None) -> None:
+    def __init__(
+        self, in_channels: int, conv_block: Optional[Callable[..., nn.Module]] = None
+    ) -> None:
         super().__init__()
         if conv_block is None:
             conv_block = BasicConv2d
@@ -321,7 +342,10 @@ class InceptionE(nn.Module):
 
 class InceptionAux(nn.Module):
     def __init__(
-        self, in_channels: int, num_classes: int, conv_block: Optional[Callable[..., nn.Module]] = None
+        self,
+        in_channels: int,
+        num_classes: int,
+        conv_block: Optional[Callable[..., nn.Module]] = None,
     ) -> None:
         super().__init__()
         if conv_block is None:
@@ -455,16 +479,20 @@ if __name__ == "__main__":
     print("Image path:", imagepath)
     input_image = Image.open(imagepath)
     # Convert image to 3 x 299 x 299 and normalize as expected by the model
-    preprocess = Compose([
-        Resize(299),
-        CenterCrop(299),
-        ToTensor(),
-        Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
-    ])
+    preprocess = Compose(
+        [
+            Resize(299),
+            CenterCrop(299),
+            ToTensor(),
+            Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+        ]
+    )
     input_tensor = preprocess(input_image)
     # Convert to a mini-batch as expected by the model
     # 3 x 299 x 299 -> 1 x 3 x 299 x 299
-    input_batch = input_tensor.unsqueeze(0)  # create a mini-batch as expected by the model
+    input_batch = input_tensor.unsqueeze(
+        0
+    )  # create a mini-batch as expected by the model
     print("Input image size", input_batch.shape)
     separator()
     with torch.no_grad():
