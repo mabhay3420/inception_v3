@@ -408,6 +408,7 @@ class Inception_V3_Weights(WeightsEnum):
     )
     DEFAULT = IMAGENET1K_V1
 
+
 def get_image():
     """
     Get a random image from the 'images' directory.
