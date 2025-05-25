@@ -408,26 +408,6 @@ class Inception_V3_Weights(WeightsEnum):
     )
     DEFAULT = IMAGENET1K_V1
 
-    """
-
-    Args:
-        weights (:class:`~torchvision.models.Inception_V3_Weights`, optional): The
-            pretrained weights for the model. See
-            :class:`~torchvision.models.Inception_V3_Weights` below for
-            more details, and possible values. By default, no pre-trained
-            weights are used.
-        progress (bool, optional): If True, displays a progress bar of the
-            download to stderr. Default is True.
-        **kwargs: parameters passed to the ``torchvision.models.Inception3``
-            base class. Please refer to the `source code
-            <https://github.com/pytorch/vision/blob/main/torchvision/models/inception.py>`_
-            for more details about this class.
-
-    .. autoclass:: torchvision.models.Inception_V3_Weights
-        :members:
-    """
-
-
 def get_image():
     """
     Get a random image from the 'images' directory.
