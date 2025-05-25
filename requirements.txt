@@ -1,0 +1,4 @@
+torch
+torchvision
+ai-edge-model-explorer
+
